@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Query Generator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="chat-container">
+        <div class="chat-header">
+          <h1>SQL Query Generator</h1>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+          <textarea id="userInput"
+            placeholder="Describe your SQL query needs... (e.g., 'Show me all cities with population over 1 million')"></textarea>
+          <button id="sendButton">Send</button>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="query-section">
+        <h2>Generated SQL Query</h2>
+        <pre id="sqlQuery" class="sql-display"></pre>
+        <button id="copyButton" class="copy-button">Copy Query</button>
+      </div>
+      <div class="results-section">
+        <h2>Query Results</h2>
+        <div id="resultsTable" class="results-table"></div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="components/app.js"></script>
+</body>
+
+</html>

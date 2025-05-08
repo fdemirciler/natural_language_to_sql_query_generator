@@ -1,0 +1,168 @@
+{
+  "project_id": "zusxmtczffvuxmuorwzz",
+  "database_name": "world_cities",
+  "tables": [
+    {
+      "name": "city",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "integer",
+          "format": "int4",
+          "is_nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "countrycode",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        },
+        {
+          "name": "district",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "population",
+          "data_type": "integer",
+          "format": "int4",
+          "is_nullable": false
+        }
+      ]
+    },
+    {
+      "name": "country",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "code",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        },
+        {
+          "name": "name",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "continent",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "region",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "surfacearea",
+          "data_type": "real",
+          "format": "float4",
+          "is_nullable": false
+        },
+        {
+          "name": "indepyear",
+          "data_type": "smallint",
+          "format": "int2",
+          "is_nullable": true
+        },
+        {
+          "name": "population",
+          "data_type": "integer",
+          "format": "int4",
+          "is_nullable": false
+        },
+        {
+          "name": "lifeexpectancy",
+          "data_type": "real",
+          "format": "float4",
+          "is_nullable": true
+        },
+        {
+          "name": "gnp",
+          "data_type": "numeric",
+          "format": "numeric",
+          "is_nullable": true
+        },
+        {
+          "name": "gnpold",
+          "data_type": "numeric",
+          "format": "numeric",
+          "is_nullable": true
+        },
+        {
+          "name": "localname",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "governmentform",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "headofstate",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": true
+        },
+        {
+          "name": "capital",
+          "data_type": "integer",
+          "format": "int4",
+          "is_nullable": true
+        },
+        {
+          "name": "code2",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        }
+      ]
+    },
+    {
+      "name": "countrylanguage",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "countrycode",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "isofficial",
+          "data_type": "boolean",
+          "format": "bool",
+          "is_nullable": false
+        },
+        {
+          "name": "percentage",
+          "data_type": "real",
+          "format": "float4",
+          "is_nullable": false
+        }
+      ]
+    }
+  ]
+}
