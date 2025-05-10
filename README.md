@@ -1,22 +1,28 @@
-# SQL Query Generator
+# Natural Language to SQL Query Generator
 
-A web application that converts natural language questions into SQL queries for a world cities database using Together.ai's language models.
+A modern web application that converts natural language questions into SQL queries for the World PostgreSQL database using Together.ai's language models. The application features a clean, intuitive interface with consistent design language throughout.
 
 ## Features
 
-- Convert natural language questions to SQL queries
-- Execute SQL queries against a Supabase database
+- Convert natural language questions to SQL queries using AI
+- Edit and format generated SQL queries
+- Execute SQL queries against a Supabase PostgreSQL database
 - View query results in a clean, tabular format
-- Syntax highlighting for SQL queries
-- Responsive design for mobile and desktop
+- Interactive database schema visualization
+- Syntax highlighting for SQL with dark mode support
+- Responsive design for all devices
+- Consistent, modern UI with the Inter font
 
 ## Technologies Used
 
-- Next.js (React)
-- Chakra UI for styling
-- Vercel AI SDK for Together.ai integration
-- Supabase for database operations
-- Deployed on Vercel
+- **Framework**: Next.js (React)
+- **UI Library**: Chakra UI with custom theme
+- **Styling**: Custom theme with Inter font
+- **API Integration**: Vercel AI SDK for Together.ai LLM integration
+- **Database**: Supabase PostgreSQL (World database)
+- **SQL Formatting**: sql-formatter library
+- **Code Highlighting**: react-syntax-highlighter with light/dark themes
+- **Deployment**: Vercel
 
 ## Getting Started
 
@@ -45,19 +51,20 @@ sql_query_generator/
 ├── public/
 │   └── world_cities_schema.json  # Database schema definition
 ├── src/
+│   ├── components/
+│   │   ├── ChatInterface.js      # Natural language input component
+│   │   ├── ResultsTable.js       # Query results display component
+│   │   ├── SchemaVisualizer.js   # Interactive database schema component
+│   │   └── SqlDisplay.js         # SQL display and editing component
 │   ├── pages/
 │   │   ├── api/
 │   │   │   ├── generate-sql.js   # API route for SQL generation
 │   │   │   └── execute-sql.js    # API route for SQL execution
-│   │   ├── _app.js              # App configuration with Chakra UI
+│   │   ├── _app.js              # Application wrapper with theme
 │   │   └── index.js             # Main application page
-│   ├── components/
-│   │   ├── ChatInterface.js     # Input for natural language questions
-│   │   ├── SqlDisplay.js        # Display for generated SQL queries
-│   │   ├── ResultsTable.js      # Display for query results
-│   │   └── Header.js            # Application header
+│   ├── theme.js                 # Custom Chakra UI theme
 │   └── utils/
-│       └── schema.js            # Utility for loading schema
+│       └── schema.js            # Schema utility functions
 └── .env.local                   # Environment variables (not in repo)
 ```
 
@@ -68,6 +75,23 @@ This app uses the ["World" sample database](https://www.postgresql.org/ftp/proje
 ## Deployment
 
 This application is deployed on Vercel. The live version can be accessed at [sql-query-generator.vercel.app](https://sql-query-generator.vercel.app).
+
+## Recent Updates
+
+### UI Improvements
+- Implemented Inter font throughout the application with optimized font weights
+- Redesigned the Database Schema section with an interactive card-based visualization
+- Updated toast notifications to use light pastel blue instead of green
+- Fixed dark mode theme consistency and syntax highlighting
+- Added rounded corners to all input fields for visual consistency
+- Enhanced spacing and padding throughout the interface
+
+### Functional Enhancements
+- Added SQL query editing with auto-formatting
+- Implemented query persistence between editing and execution
+- Created auto-resizing components that adjust based on content
+- Improved empty query results feedback with context-specific messages
+- Enhanced component data flow for better state management
 
 ## License
 

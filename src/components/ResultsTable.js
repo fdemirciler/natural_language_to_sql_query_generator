@@ -19,8 +19,11 @@ import {
   Button,
   Text,
   useColorModeValue,
-  Tooltip
+  Tooltip,
+  HStack,
+  Badge
 } from '@chakra-ui/react';
+import { DownloadIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 const ResultsTable = ({ results, isLoading, error }) => {
   // All hooks must be at the top!
@@ -74,21 +77,11 @@ const ResultsTable = ({ results, isLoading, error }) => {
     );
   }
 
-  if (results === null || results === undefined) {
-    return null;
-  }
-  if (Array.isArray(results) && results.length === 0) {
-    return (
-      <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden">
-        <Box p={6} bg="gray.50" textAlign="center">
-          <Heading size="sm" color="gray.500">No results found for this query.</Heading>
-        </Box>
-      </Box>
-    );
-  }
+  // Prepare empty state display
+  const isEmpty = results === null || results === undefined || (Array.isArray(results) && results.length === 0);
 
-  // Extract column headers from the first result
-  const columns = Object.keys(results[0]);
+  // Extract column headers from the first result or use empty array if no results
+  const columns = !isEmpty ? Object.keys(results[0]) : [];
 
   // Utility function to convert results to CSV
 const downloadCSV = () => {
@@ -118,10 +111,10 @@ const downloadCSV = () => {
   URL.revokeObjectURL(url);
 };
 
-// Pagination logic
+  // Pagination logic
 const rowsPerPage = 10;
 const pageCount = results && results.length ? Math.ceil(results.length / rowsPerPage) : 1;
-const paginatedResults = (sortedResults || []).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+const paginatedResults = !isEmpty ? (sortedResults || []).slice(page * rowsPerPage, (page + 1) * rowsPerPage) : [];
 
 // Copy to clipboard as CSV
 const copyTable = () => {
@@ -146,63 +139,139 @@ const copyTable = () => {
   const boxBg = useColorModeValue('gray.50', 'gray.800');
   const textColor = useColorModeValue('gray.900', 'gray.100');
 
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  
   return (
-    <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Box p={4} bg={boxBg} color={textColor} borderRadius="lg" boxShadow="sm">
-        <Flex align="center" justify="space-between" mb={2} wrap="wrap" gap={2}>
-          <Heading size="sm" color={textColor}>Query Results ({results.length} rows)</Heading>
-        <Flex gap={2}>
-          <Tooltip label="Copy results table to clipboard" hasArrow>
-            <Button size="sm" colorScheme="blue" onClick={copyTable}>Copy Table</Button>
-          </Tooltip>
-          <Tooltip label="Download results as CSV" hasArrow>
-            <Button size="sm" colorScheme="blue" onClick={downloadCSV}>Download CSV</Button>
-          </Tooltip>
+    <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden" borderColor={borderColor} boxShadow="md">
+      <Box p={4} bg={boxBg} color={textColor}>
+        <Flex align="center" justify="space-between" mb={3}>
+          <Flex align="center">
+            <Heading size="sm" color={useColorModeValue('gray.600', 'gray.100')}>Query Results</Heading>
+            {!isEmpty && (
+              <Text ml={2} fontSize="xs" color={useColorModeValue('gray.600', 'gray.300')}>{results.length} rows</Text>
+            )}
+          </Flex>
+          <HStack spacing={2}>
+            <Tooltip label="Copy results table to clipboard" hasArrow>
+              <Button size="sm" variant="ghost" onClick={copyTable}>
+                <CopyIcon />
+              </Button>
+            </Tooltip>
+            <Tooltip label="Download results as CSV" hasArrow>
+              <Button size="sm" variant="ghost" onClick={downloadCSV}>
+                <DownloadIcon />
+              </Button>
+            </Tooltip>
+          </HStack>
         </Flex>
-      </Flex>
-      <TableContainer bg={useColorModeValue('white', 'gray.800')} borderRadius="md" boxShadow="sm" overflowX="auto">
-        <Table variant="simple" size="sm" aria-label="Query Results Table" bg={useColorModeValue('white', 'gray.800')} color={useColorModeValue('gray.900', 'gray.100')} minW="100%">
-          <Thead>
-            <Tr>
-              {columns.map((column) => (
-                <Th
-                  key={column}
-                  cursor="pointer"
-                  onClick={() => handleSort(column)}
-                  userSelect="none"
-                  color={sortConfig.key === column ? 'blue.600' : undefined}
-                >
-                  {column}
-                  {sortConfig.key === column && (
-                    <span style={{ marginLeft: 4 }}>
-                      {sortConfig.direction === 'asc' ? '▲' : '▼'}
-                    </span>
-                  )}
-                </Th>
-              ))}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {paginatedResults.map((row, rowIndex) => (
-              <Tr key={rowIndex}>
-                {columns.map((column) => (
-                  <Td key={`${rowIndex}-${column}`}>{row[column]?.toString() || 'null'}</Td>
+        
+        {isEmpty ? (
+          <Box p={6} bg={useColorModeValue('white', 'gray.800')} textAlign="center" borderWidth="1px" borderRadius="md" borderColor={borderColor}>
+            <Text color={useColorModeValue('gray.500', 'gray.400')}>
+              {results && Array.isArray(results) ? 'No rows returned for this query.' : 'No results yet. Run a query to see data here.'}
+            </Text>
+          </Box>
+        ) : (
+          <TableContainer 
+            bg={useColorModeValue('white', 'gray.800')} 
+            borderRadius="md" 
+            overflowX="auto"
+            borderWidth="1px"
+            borderColor={borderColor}
+            boxShadow="sm"
+          >
+            <Table variant="simple" size="sm" aria-label="Query Results Table" color={useColorModeValue('gray.900', 'gray.100')} minW="100%">
+              <Thead bg={useColorModeValue('gray.50', 'gray.700')}>
+                <Tr>
+                  {columns.map((column) => (
+                    <Th
+                      key={column}
+                      cursor="pointer"
+                      onClick={() => handleSort(column)}
+                      userSelect="none"
+                      color={sortConfig.key === column ? 'blue.500' : undefined}
+                      py={3}
+                      fontSize="xs"
+                    >
+                      <Flex align="center">
+                        {column}
+                        {sortConfig.key === column && (
+                          <Text ml={1} color="blue.500">
+                            {sortConfig.direction === 'asc' ? '▲' : '▼'}
+                          </Text>
+                        )}
+                      </Flex>
+                    </Th>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {paginatedResults.map((row, rowIndex) => (
+                  <Tr key={rowIndex} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
+                    {columns.map((column) => (
+                      <Td key={`${rowIndex}-${column}`} py={2} fontSize="sm">{row[column]?.toString() || 'null'}</Td>
+                    ))}
+                  </Tr>
                 ))}
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-      {/* Pagination Controls */}
-      <Flex justify="flex-end" align="center" mt={3} gap={2}>
-        <Button size="xs" onClick={() => setPage(0)} isDisabled={page === 0}>First</Button>
-        <Button size="xs" onClick={() => setPage(page - 1)} isDisabled={page === 0}>Prev</Button>
-        <Text fontSize="sm">Page {page + 1} of {pageCount}</Text>
-        <Button size="xs" onClick={() => setPage(page + 1)} isDisabled={page >= pageCount - 1}>Next</Button>
-        <Button size="xs" onClick={() => setPage(pageCount - 1)} isDisabled={page >= pageCount - 1}>Last</Button>
-      </Flex>
+              </Tbody>
+            </Table>
+          </TableContainer>
+        )}
+        
+        {/* Pagination Controls */}
+        {!isEmpty && (
+          <Flex justify="space-between" align="center" mt={4}>
+            <Text fontSize="sm" color={textColor}>Showing {page * rowsPerPage + 1} to {Math.min((page + 1) * rowsPerPage, results.length)} of {results.length} results</Text>
+            
+            <HStack spacing={1}>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => setPage(0)} 
+                isDisabled={page === 0}
+                fontSize="sm"
+              >
+                <ChevronLeftIcon />
+                <ChevronLeftIcon ml="-1.5" />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => setPage(page - 1)} 
+                isDisabled={page === 0}
+                fontSize="sm"
+              >
+                <ChevronLeftIcon />
+              </Button>
+              
+              <Text fontSize="sm" mx={2}>
+                Page {page + 1} of {pageCount}
+              </Text>
+              
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => setPage(page + 1)} 
+                isDisabled={page >= pageCount - 1}
+                fontSize="sm"
+              >
+                <ChevronRightIcon />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => setPage(pageCount - 1)} 
+                isDisabled={page >= pageCount - 1}
+                fontSize="sm"
+              >
+                <ChevronRightIcon />
+                <ChevronRightIcon ml="-1.5" />
+              </Button>
+            </HStack>
+          </Flex>
+        )}
+      </Box>
     </Box>
-  </Box>
 );
 };
 

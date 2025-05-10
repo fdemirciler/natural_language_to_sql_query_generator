@@ -10,9 +10,15 @@ import {
   useColorModeValue,
   useColorMode,
   IconButton,
-  Link
+  Link,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon
 } from '@chakra-ui/react';
 import { SunIcon, MoonIcon } from '@chakra-ui/icons';
+import SchemaVisualizer from '../components/SchemaVisualizer';
 
 // Inline ColorModeToggle component
 const ColorModeToggle = () => {
@@ -41,6 +47,7 @@ export default function Home() {
   const bg = useColorModeValue('gray.100', 'gray.900');
   const headingColor = useColorModeValue('gray.600', 'gray.100');
   const textColor = useColorModeValue('gray.600', 'gray.300');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
   const [schema, setSchema] = useState(null);
   const [question, setQuestion] = useState('');
   const [sqlQuery, setSqlQuery] = useState('');
@@ -61,6 +68,7 @@ export default function Home() {
         toast({
           title: 'Error loading database schema',
           status: 'error',
+          colorScheme: "red",
           duration: 5000,
           isClosable: true,
         });
@@ -103,6 +111,7 @@ export default function Home() {
         title: 'Error generating SQL',
         description: err.message,
         status: 'error',
+        colorScheme: "red",
         duration: 5000,
         isClosable: true,
       });
@@ -139,6 +148,7 @@ export default function Home() {
         title: 'Error executing SQL',
         description: err.message,
         status: 'error',
+        colorScheme: "red",
         duration: 5000,
         isClosable: true,
       });
@@ -166,16 +176,38 @@ export default function Home() {
             onSubmit={handleQuestionSubmit} 
             isLoading={isGenerating} 
           />
+          
           <SqlDisplay 
             sql={sqlQuery} 
             onExecute={handleExecuteQuery}
             isExecuting={isExecuting}
+            onSqlUpdate={setSqlQuery}
           />
           <ResultsTable 
             results={results} 
             isLoading={isExecuting}
             error={error}
           />
+          
+          {/* Database Schema Section */}
+          <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden" borderColor={borderColor} boxShadow="md">
+            <Box p={4} bg={useColorModeValue('gray.50', 'gray.800')}>
+              <Flex align="center" mb={3}>
+                <Heading size="sm" color={headingColor}>Database Schema</Heading>
+              </Flex>
+              
+              <Box 
+                bg={useColorModeValue('white', 'gray.800')} 
+                borderRadius="md" 
+                borderWidth="1px"
+                borderColor={borderColor}
+                boxShadow="sm"
+                overflow="hidden"
+              >
+                <SchemaVisualizer schema={schema} />
+              </Box>
+            </Box>
+          </Box>
         </VStack>
       </Container>
     </Box>
