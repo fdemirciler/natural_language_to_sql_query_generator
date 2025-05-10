@@ -74,7 +74,7 @@ This app uses the ["World" sample database](https://www.postgresql.org/ftp/proje
 
 ## Deployment
 
-This application is deployed on Vercel. The live version can be accessed at [sql-query-generator.vercel.app](https://sql-query-generator.vercel.app).
+This application is deployed on Vercel. The live version can be accessed at [sqlquerygenerator.vercel.app](https://sqlquerygenerator.vercel.app).
 
 ## Recent Updates
 
