@@ -40,9 +40,9 @@ A modern web application that converts natural language questions into SQL queri
 
 ## Environment Variables
 
-- `TOGETHER_API_KEY`: Your Together.ai API key
-- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key
+- `TOGETHER_API_KEY`: Together.ai API key
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key
 
 ## Project Structure
 
