@@ -1,41 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL Query Generator</title>
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Generator - Project Showcase</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin-top: 0;
+            color: #2b6cb0;
+        }
+        .project-screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #3182ce;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .cta-button:hover {
+            background-color: #2b6cb0;
+        }
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #666;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="left-panel">
-      <div class="chat-container">
-        <div class="chat-header">
-          <h1>SQL Query Generator</h1>
-        </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-          <textarea id="userInput"
-            placeholder="Describe your SQL query needs... (e.g., 'Show me all cities with population over 1 million')"></textarea>
-          <button id="sendButton">Send</button>
-        </div>
-      </div>
-    </div>
-    <div class="right-panel">
-      <div class="query-section">
-        <h2>Generated SQL Query</h2>
-        <pre id="sqlQuery" class="sql-display"></pre>
-        <button id="copyButton" class="copy-button">Copy Query</button>
-      </div>
-      <div class="results-section">
-        <h2>Query Results</h2>
-        <div id="resultsTable" class="results-table"></div>
-      </div>
-    </div>
-  </div>
-  <script type="module" src="components/app.js"></script>
+    <header>
+        <h1>SQL Query Generator</h1>
+        <p>Convert natural language questions into SQL queries using AI</p>
+    </header>
+    
+    <main>
+        <section>
+            <h2>Project Overview</h2>
+            <p>This application converts natural language questions into SQL queries for a world cities database using Together.ai's language models. Users can ask questions in plain English, and the application will generate the corresponding SQL query, execute it against a Supabase database, and display the results.</p>
+            
+            <a href="https://sqlquerygenerator.vercel.app" target="_blank" class="cta-button">Try the Live App</a>
+        </section>
+        
+        <section>
+            <h2>Features</h2>
+            <ul>
+                <li>Natural language to SQL conversion using Together.ai</li>
+                <li>Real-time query execution against a Supabase database</li>
+                <li>Syntax highlighting for SQL queries</li>
+                <li>Clean, responsive user interface built with Chakra UI</li>
+                <li>Error handling and loading states</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Example Questions</h2>
+            <p>Try asking questions like:</p>
+            <ul>
+                <li>"How many cities are there in each country?"</li>
+                <li>"What are the top 10 most populated cities?"</li>
+                <li>"Which countries have the highest life expectancy?"</li>
+                <li>"List all cities in Germany with population over 500,000"</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Technical Implementation</h2>
+            <p>This project uses:</p>
+            <ul>
+                <li>Next.js for the frontend and API routes</li>
+                <li>Vercel AI SDK for secure Together.ai integration</li>
+                <li>Chakra UI for a clean, responsive interface</li>
+                <li>Supabase for database operations</li>
+                <li>Vercel for deployment and serverless functions</li>
+            </ul>
+            
+            <h3>How It Works</h3>
+            <p>When a user submits a question:</p>
+            <ol>
+                <li>The application sends the question and database schema to the Together.ai API</li>
+                <li>Together.ai generates a SQL query based on the question and schema</li>
+                <li>The application executes the query against the Supabase database</li>
+                <li>Results are displayed in a clean, tabular format</li>
+            </ol>
+        </section>
+    </main>
+    
+    <footer>
+        <p>View the <a href="https://github.com/fdemirciler/sql-query-generator" target="_blank">source code on GitHub</a></p>
+        <p>Created by Fatih Demirciler - 2025</p>
+    </footer>
 </body>
-
 </html>
