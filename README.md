@@ -1,17 +1,19 @@
 # Natural Language to SQL Query Generator
 
-A modern web application that converts natural language questions into SQL queries for the World PostgreSQL database using Together.ai's language models. The application features a clean, intuitive interface with consistent design language throughout.
+A modern web application that converts natural language questions into SQL queries for the World PostgreSQL database using Together.ai's language models. The application features a clean, intuitive interface with consistent design language throughout, including a responsive layout and dark mode support.
 
-## Features
+## ✨ Features
 
-- Convert natural language questions to SQL queries using AI
-- Edit and format generated SQL queries
-- Execute SQL queries against a Supabase PostgreSQL database
-- View query results in a clean, tabular format
-- Interactive database schema visualization
-- Syntax highlighting for SQL with dark mode support
-- Responsive design for all devices
-- Consistent, modern UI with the Inter font
+- **Natural Language to SQL**: Convert plain English questions into SQL queries using AI
+- **Query History**: View and manage your previous queries with the interactive history panel
+- **SQL Editing**: Edit and format generated SQL queries with syntax highlighting
+- **Query Execution**: Run SQL queries directly against a Supabase PostgreSQL database
+- **Results Table**: View and sort query results in a clean, interactive table
+- **Database Schema**: Visualize the database structure with expandable table cards
+- **Dark Mode**: Toggle between light and dark themes
+- **Responsive Design**: Works on desktop and mobile devices
+- **Modern UI**: Clean, intuitive interface with consistent typography and spacing
+- **Query Persistence**: Your work is saved between sessions
 
 ## Technologies Used
 

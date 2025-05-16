@@ -26,9 +26,21 @@ import {
 import { DownloadIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 const ResultsTable = ({ results, isLoading, error }) => {
-  // All hooks must be at the top!
+  // State hooks
   const [sortConfig, setSortConfig] = React.useState({ key: null, direction: 'asc' });
   const [page, setPage] = React.useState(0);
+  
+  // Theme hooks
+  const boxBg = useColorModeValue('gray.50', 'gray.800');
+  const textColor = useColorModeValue('gray.900', 'gray.100');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const hoverBg = useColorModeValue('gray.50', 'gray.700');
+  const headerColor = useColorModeValue('gray.600', 'gray.100');
+  const rowCountColor = useColorModeValue('gray.600', 'gray.300');
+  const emptyTextColor = useColorModeValue('gray.500', 'gray.400');
+  const tableBg = useColorModeValue('white', 'gray.800');
+  const headerBg = useColorModeValue('gray.50', 'gray.700');
+  const tableTextColor = useColorModeValue('gray.900', 'gray.100');
 
   // Sorting logic
   const sortedResults = React.useMemo(() => {
@@ -136,19 +148,16 @@ const copyTable = () => {
   navigator.clipboard.writeText(csvRows.join("\n"));
 };
 
-  const boxBg = useColorModeValue('gray.50', 'gray.800');
-  const textColor = useColorModeValue('gray.900', 'gray.100');
 
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
   
   return (
     <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden" borderColor={borderColor} boxShadow="md">
       <Box p={4} bg={boxBg} color={textColor}>
         <Flex align="center" justify="space-between" mb={3}>
           <Flex align="center">
-            <Heading size="sm" color={useColorModeValue('gray.600', 'gray.100')}>Query Results</Heading>
+            <Heading size="sm" color={headerColor}>Query Results</Heading>
             {!isEmpty && (
-              <Text ml={2} fontSize="xs" color={useColorModeValue('gray.600', 'gray.300')}>{results.length} rows</Text>
+              <Text ml={2} fontSize="xs" color={rowCountColor}>{results.length} rows</Text>
             )}
           </Flex>
           <HStack spacing={2}>
@@ -166,22 +175,22 @@ const copyTable = () => {
         </Flex>
         
         {isEmpty ? (
-          <Box p={6} bg={useColorModeValue('white', 'gray.800')} textAlign="center" borderWidth="1px" borderRadius="md" borderColor={borderColor}>
-            <Text color={useColorModeValue('gray.500', 'gray.400')}>
+          <Box p={6} bg={tableBg} textAlign="center" borderWidth="1px" borderRadius="md" borderColor={borderColor}>
+            <Text color={emptyTextColor}>
               {results && Array.isArray(results) ? 'No rows returned for this query.' : 'No results yet. Run a query to see data here.'}
             </Text>
           </Box>
         ) : (
           <TableContainer 
-            bg={useColorModeValue('white', 'gray.800')} 
+            bg={tableBg}
             borderRadius="md" 
             overflowX="auto"
             borderWidth="1px"
             borderColor={borderColor}
             boxShadow="sm"
           >
-            <Table variant="simple" size="sm" aria-label="Query Results Table" color={useColorModeValue('gray.900', 'gray.100')} minW="100%">
-              <Thead bg={useColorModeValue('gray.50', 'gray.700')}>
+            <Table variant="simple" size="sm" aria-label="Query Results Table" color={tableTextColor} minW="100%">
+              <Thead bg={headerBg}>
                 <Tr>
                   {columns.map((column) => (
                     <Th
@@ -207,7 +216,7 @@ const copyTable = () => {
               </Thead>
               <Tbody>
                 {paginatedResults.map((row, rowIndex) => (
-                  <Tr key={rowIndex} _hover={{ bg: useColorModeValue('gray.50', 'gray.700') }}>
+                  <Tr key={rowIndex} _hover={{ bg: hoverBg }}>
                     {columns.map((column) => (
                       <Td key={`${rowIndex}-${column}`} py={2} fontSize="sm">{row[column]?.toString() || 'null'}</Td>
                     ))}

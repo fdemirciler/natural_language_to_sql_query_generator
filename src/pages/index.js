@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   Container, 
   Box, 
@@ -11,14 +11,32 @@ import {
   useColorMode,
   IconButton,
   Link,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon
+  useDisclosure,
+  Icon
 } from '@chakra-ui/react';
 import { SunIcon, MoonIcon } from '@chakra-ui/icons';
+import { FiClock, FiChevronLeft } from 'react-icons/fi';
 import SchemaVisualizer from '../components/SchemaVisualizer';
+import HistoryPanel from '../components/HistoryPanel';
+
+// Custom Moon icon component with the provided SVG
+const CustomMoonIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="size-6"
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+    />
+  </svg>
+);
 
 // Inline ColorModeToggle component
 const ColorModeToggle = () => {
@@ -26,7 +44,7 @@ const ColorModeToggle = () => {
   return (
     <IconButton
       aria-label={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-      icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+      icon={colorMode === 'light' ? <CustomMoonIcon width="1.25rem" height="1.25rem" /> : <SunIcon />}
       onClick={toggleColorMode}
       variant="ghost"
       color="current"
@@ -40,7 +58,6 @@ import ChatInterface from '../components/ChatInterface';
 import SqlDisplay from '../components/SqlDisplay';
 import ResultsTable from '../components/ResultsTable';
 import { getSchema } from '../utils/schema';
-
 
 export default function Home() {
   // Color mode values for background and text
@@ -56,6 +73,8 @@ export default function Home() {
   const [isExecuting, setIsExecuting] = useState(false);
   const [error, setError] = useState(null);
   const toast = useToast();
+  const historyPanelDisclosure = useDisclosure({ defaultIsOpen: false });
+  const historyPanelRef = useRef(null);
 
   // Load schema on component mount
   useEffect(() => {
@@ -104,6 +123,23 @@ export default function Home() {
       
       const data = await response.json();
       setSqlQuery(data.sqlQuery);
+      
+      // Add to history when a new query is generated
+      if (historyPanelRef.current) {
+        console.log('Adding to history:', { question: questionText, sql: data.sqlQuery });
+        try {
+          historyPanelRef.current.addToHistory({
+            question: questionText,
+            sql: data.sqlQuery,
+            rowCount: 0 // Will be updated when executed
+          });
+          console.log('Successfully added to history');
+        } catch (error) {
+          console.error('Error adding to history:', error);
+        }
+      } else {
+        console.warn('historyPanelRef.current is null');
+      }
     } catch (err) {
       console.error('Error generating SQL:', err);
       setError(err.message);
@@ -141,6 +177,15 @@ export default function Home() {
       
       const data = await response.json();
       setResults(data.results);
+      
+      // Update the history item with the row count
+      if (historyPanelRef.current) {
+        historyPanelRef.current.updateLastHistoryItem({
+          rowCount: data.results ? data.results.length : 0
+        });
+      }
+      
+      return data.results ? data.results.length : 0;
     } catch (err) {
       console.error('Error executing SQL:', err);
       setError(err.message);
@@ -152,22 +197,71 @@ export default function Home() {
         duration: 5000,
         isClosable: true,
       });
+      throw err;
     } finally {
       setIsExecuting(false);
     }
   };
 
+  // Handle loading a query from history
+  const handleLoadQuery = useCallback(({ question, sql }) => {
+    setQuestion(question);
+    setSqlQuery(sql);
+    setResults(null);
+    setError(null);
+    // Don't execute automatically, let the user click run
+  }, []);
+
   return (
     <Box minH="100vh" bg={bg}>
-      <Container maxW="4xl" py={8}>
-        <Flex justify="flex-end" align="center" mb={2}>
-          <ColorModeToggle />
-        </Flex>
-        <VStack spacing={8} align="stretch">
-          <Box textAlign="center">
-            <Heading size="lg" color={headingColor} mb={2}>
+      {/* History Panel */}
+      <HistoryPanel 
+        ref={historyPanelRef}
+        onSelectQuery={handleLoadQuery}
+        onExecuteQuery={handleExecuteQuery}
+        currentQuery={sqlQuery}
+        isOpen={historyPanelDisclosure.isOpen}
+        onClose={historyPanelDisclosure.onClose}
+      />
+      
+      <Box 
+        width="100%" 
+        display="flex" 
+        justifyContent="center"
+        pl={historyPanelDisclosure.isOpen ? '300px' : 0}
+        transition="padding-left 0.3s ease-in-out"
+      >
+        <Container 
+          maxW="4xl" 
+          py={8}
+          px={4}
+        >
+        <Box position="relative" width="100%" mb={6}>
+          <Flex justify="center" align="center" position="relative">
+            <Heading size="lg" color={headingColor} textAlign="center">
               Natural Language to SQL Query Generator
             </Heading>
+            <Box position="absolute" right={0}>
+              <ColorModeToggle />
+            </Box>
+          </Flex>
+          <Box position="absolute" left={0} top="50%" transform="translateY(-50%)">
+            <IconButton
+              aria-label={historyPanelDisclosure.isOpen ? 'Hide history' : 'Show history'}
+              icon={historyPanelDisclosure.isOpen ? <Icon as={FiChevronLeft} /> : <Icon as={FiClock} />}
+              onClick={() => {
+                if (historyPanelDisclosure.isOpen) {
+                  historyPanelDisclosure.onClose();
+                } else {
+                  historyPanelDisclosure.onOpen();
+                }
+              }}
+              variant="ghost"
+            />
+          </Box>
+        </Box>
+        <VStack spacing={8} align="stretch">
+          <Box textAlign="center" mb={6}>
             <Text color={textColor}>
               Powered by a large language model through Together.ai, this app lets you query the <Link href="https://www.postgresql.org/ftp/projects/pgFoundry/dbsamples/world/world-1.0/" isExternal color="blue.400" fontWeight="bold">World</Link> PostgreSQL database stored in Supabase using natural language. Example: "How many cities are there in each country?"
             </Text>
@@ -209,7 +303,8 @@ export default function Home() {
             </Box>
           </Box>
         </VStack>
-      </Container>
+        </Container>
+      </Box>
     </Box>
   );
 }

@@ -130,7 +130,7 @@ const SqlDisplay = ({ sql, onExecute, isExecuting, onSqlUpdate }) => {
   const buttonHoverBg = useColorModeValue('gray.300', 'gray.600');
   const boxBg = useColorModeValue('gray.50', 'gray.800');
   const sqlBg = useColorModeValue('white', 'gray.800');
-  const textColor = useColorModeValue('gray.900', 'gray.100');
+  const textColor = useColorModeValue('gray.600', 'gray.100');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
 
   return (
