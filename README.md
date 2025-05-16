@@ -54,19 +54,21 @@ sql_query_generator/
 │   └── world_cities_schema.json  # Database schema definition
 ├── src/
 │   ├── components/
-│   │   ├── ChatInterface.js      # Natural language input component
-│   │   ├── ResultsTable.js       # Query results display component
-│   │   ├── SchemaVisualizer.js   # Interactive database schema component
-│   │   └── SqlDisplay.js         # SQL display and editing component
+│   │   ├── ChatInterface.js      # Natural language input component with auto-expanding textarea
+│   │   ├── ResultsTable.js       # Interactive query results display with sorting and pagination
+│   │   ├── SchemaVisualizer.js   # Interactive database schema visualization
+│   │   ├── SqlDisplay.js         # SQL display with syntax highlighting and editing
+│   │   ├── HistoryPanel.js       # Side panel for managing query history
+│   │   └── HistoryItem.js        # Individual history item component
 │   ├── pages/
 │   │   ├── api/
-│   │   │   ├── generate-sql.js   # API route for SQL generation
-│   │   │   └── execute-sql.js    # API route for SQL execution
-│   │   ├── _app.js              # Application wrapper with theme
-│   │   └── index.js             # Main application page
-│   ├── theme.js                 # Custom Chakra UI theme
+│   │   │   ├── generate-sql.js   # API route for SQL generation using Together.ai
+│   │   │   └── execute-sql.js    # API route for SQL execution on Supabase
+│   │   ├── _app.js              # Application wrapper with theme provider
+│   │   └── index.js             # Main application page with layout and state management
+│   ├── theme.js                 # Custom Chakra UI theme configuration
 │   └── utils/
-│       └── schema.js            # Schema utility functions
+│       └── schema.js          # Database schema utilities and data
 └── .env.local                   # Environment variables (not in repo)
 ```
 
