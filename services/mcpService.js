@@ -2,7 +2,6 @@ import { config } from '../config/config.js';
 
 export class MCPService {
   constructor() {
-    this.mcpProcess = null;
     this.isConnected = false;
     this.dbSchema = null;
   }
@@ -11,33 +10,18 @@ export class MCPService {
     if (this.isConnected) return;
 
     try {
-      const { command, args } = config.supabase.mcpServer;
-
-      // Start the MCP server process
-      const process = await this.spawnMCPServer(command, args);
-      this.mcpProcess = process;
+      // For direct PostgreSQL connection, we don't need an MCP server
+      // Just mark as connected and fetch schema
       this.isConnected = true;
 
       // Fetch the schema immediately after connection
       await this.fetchDatabaseSchema();
 
-      console.log('MCP Server started successfully');
+      console.log('Database connection established successfully');
     } catch (error) {
-      console.error('Failed to start MCP server:', error);
-      throw new Error('Failed to start MCP server');
+      console.error('Failed to establish database connection:', error);
+      throw new Error('Failed to establish database connection');
     }
-  }
-
-  async spawnMCPServer(command, args) {
-    return new Promise((resolve, reject) => {
-      // In a real implementation, we would use Node.js child_process to spawn the server
-      // For browser environment, we'll use a WebSocket or similar mechanism
-      // This is a placeholder implementation
-      resolve({
-        pid: Date.now(),
-        kill: () => { this.isConnected = false; }
-      });
-    });
   }
 
   async fetchDatabaseSchema() {
@@ -74,12 +58,12 @@ export class MCPService {
 
       const result = await this.executeQuery(schemaQuery);
 
-      if (!result || !result.data) {
+      if (!result || !result.length) {
         throw new Error('Failed to fetch schema information');
       }
 
       // Format the schema information
-      const schemaDefinition = result.data.map(table => {
+      const schemaDefinition = result.map(table => {
         return `Table: ${table.table_name}\n  Columns:\n    ${table.columns.join('\n    ')}`;
       }).join('\n\n');
 
@@ -105,14 +89,13 @@ export class MCPService {
     }
 
     try {
-      // In production, this would communicate with the MCP server via WebSocket or HTTP
-      const response = await fetch('http://localhost:54321/query', {
+      // Call the API endpoint to execute the query
+      const response = await fetch('/api/execute-sql', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.supabase.accessToken}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ query: sql })
+        body: JSON.stringify({ sqlQuery: sql })
       });
 
       if (!response.ok) {
@@ -120,7 +103,7 @@ export class MCPService {
       }
 
       const result = await response.json();
-      return result;
+      return result.results.data;
     } catch (error) {
       console.error('Error executing query:', error);
       throw new Error('Failed to execute query');
@@ -128,12 +111,8 @@ export class MCPService {
   }
 
   async stopMCPServer() {
-    if (this.mcpProcess) {
-      this.mcpProcess.kill();
-      this.mcpProcess = null;
-      this.isConnected = false;
-      this.dbSchema = null;
-      console.log('MCP Server stopped');
-    }
+    this.isConnected = false;
+    this.dbSchema = null;
+    console.log('Database connection closed');
   }
 }

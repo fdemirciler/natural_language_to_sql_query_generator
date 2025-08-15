@@ -1,13 +1,35 @@
 # Natural Language to SQL Query Generator
 
-A modern web application that converts natural language questions into SQL queries for the World PostgreSQL database using Together.ai's language models. The application features a clean, intuitive interface with consistent design language throughout, including a responsive layout and dark mode support.
+A modern web application that conver## Recent Updates
+
+### Database Migration (Latest)
+- **Migrated from Supabase to Neon.tech**: Updated database provider to Neon for improved performance and reliability
+- **Updated dependencies**: Replaced `@supabase/supabase-js` with `@vercel/postgres` for direct PostgreSQL connection
+- **Environment variables**: Simplified configuration with `POSTGRES_URL` instead of separate URL and service keys
+- **API response structure**: Updated to handle new database connection response format
+- **Error handling**: Enhanced error handling for the new database provider
+
+### UI Improvements
+- Implemented Inter font throughout the application with optimized font weights
+- Redesigned the Database Schema section with an interactive card-based visualization
+- Updated toast notifications to use light pastel blue instead of green
+- Fixed dark mode theme consistency and syntax highlighting
+- Added rounded corners to all input fields for visual consistency
+- Enhanced spacing and padding throughout the interface
+
+### Functional Enhancements
+- Added SQL query editing with auto-formatting
+- Implemented query persistence between editing and execution
+- Created auto-resizing components that adjust based on content
+- Improved empty query results feedback with context-specific messages
+- Enhanced component data flow for better state managementage questions into SQL queries for the World PostgreSQL database using Together.ai's language models. The application features a clean, intuitive interface with consistent design language throughout, including a responsive layout and dark mode support.
 
 ## ✨ Features
 
 - **Natural Language to SQL**: Convert plain English questions into SQL queries using AI
 - **Query History**: View and manage your previous queries with the interactive history panel
 - **SQL Editing**: Edit and format generated SQL queries with syntax highlighting
-- **Query Execution**: Run SQL queries directly against a Supabase PostgreSQL database
+- **Query Execution**: Run SQL queries directly against a Neon PostgreSQL database
 - **Results Table**: View and sort query results in a clean, interactive table
 - **Database Schema**: Visualize the database structure with expandable table cards
 - **Dark Mode**: Toggle between light and dark themes
@@ -20,8 +42,8 @@ A modern web application that converts natural language questions into SQL queri
 - **Framework**: Next.js (React)
 - **UI Library**: Chakra UI with custom theme
 - **Styling**: Custom theme with Inter font
-- **API Integration**: Vercel AI SDK for Together.ai LLM integration
-- **Database**: Supabase PostgreSQL (World database)
+- **API Integration**: Together.ai LLM integration
+- **Database**: Neon PostgreSQL (World database)
 - **SQL Formatting**: sql-formatter library
 - **Code Highlighting**: react-syntax-highlighter with light/dark themes
 - **Deployment**: Vercel
@@ -43,8 +65,7 @@ A modern web application that converts natural language questions into SQL queri
 ## Environment Variables
 
 - `TOGETHER_API_KEY`: Together.ai API key
-- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key
+- `POSTGRES_URL`: Neon PostgreSQL database connection string
 
 ## Project Structure
 
@@ -63,7 +84,7 @@ sql_query_generator/
 │   ├── pages/
 │   │   ├── api/
 │   │   │   ├── generate-sql.js   # API route for SQL generation using Together.ai
-│   │   │   └── execute-sql.js    # API route for SQL execution on Supabase
+│   │   │   └── execute-sql.js    # API route for SQL execution on Neon
 │   │   ├── _app.js              # Application wrapper with theme provider
 │   │   └── index.js             # Main application page with layout and state management
 │   ├── theme.js                 # Custom Chakra UI theme configuration

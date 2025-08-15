@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { 
-  Container, 
-  Box, 
-  VStack, 
-  Heading, 
+import {
+  Container,
+  Box,
+  VStack,
+  Heading,
   Text,
   useToast,
   Flex,
@@ -93,7 +93,7 @@ export default function Home() {
         });
       }
     }
-    
+
     loadSchema();
   }, [toast]);
 
@@ -103,27 +103,27 @@ export default function Home() {
     setIsGenerating(true);
     setError(null);
     setResults(null);
-    
+
     try {
       const response = await fetch('/api/generate-sql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           question: questionText,
           schema: schema
         }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to generate SQL');
       }
-      
+
       const data = await response.json();
       setSqlQuery(data.sqlQuery);
-      
+
       // Add to history when a new query is generated
       if (historyPanelRef.current) {
         console.log('Adding to history:', { question: questionText, sql: data.sqlQuery });
@@ -160,7 +160,7 @@ export default function Home() {
   const handleExecuteQuery = async (sql) => {
     setIsExecuting(true);
     setError(null);
-    
+
     try {
       const response = await fetch('/api/execute-sql', {
         method: 'POST',
@@ -169,23 +169,23 @@ export default function Home() {
         },
         body: JSON.stringify({ sqlQuery: sql }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to execute SQL');
       }
-      
+
       const data = await response.json();
-      setResults(data.results);
-      
+      setResults(data.results.data);
+
       // Update the history item with the row count
       if (historyPanelRef.current) {
         historyPanelRef.current.updateLastHistoryItem({
-          rowCount: data.results ? data.results.length : 0
+          rowCount: data.results.data ? data.results.data.length : 0
         });
       }
-      
-      return data.results ? data.results.length : 0;
+
+      return data.results.data ? data.results.data.length : 0;
     } catch (err) {
       console.error('Error executing SQL:', err);
       setError(err.message);
@@ -215,7 +215,7 @@ export default function Home() {
   return (
     <Box minH="100vh" bg={bg}>
       {/* History Panel */}
-      <HistoryPanel 
+      <HistoryPanel
         ref={historyPanelRef}
         onSelectQuery={handleLoadQuery}
         onExecuteQuery={handleExecuteQuery}
@@ -223,86 +223,86 @@ export default function Home() {
         isOpen={historyPanelDisclosure.isOpen}
         onClose={historyPanelDisclosure.onClose}
       />
-      
-      <Box 
-        width="100%" 
-        display="flex" 
+
+      <Box
+        width="100%"
+        display="flex"
         justifyContent="center"
         pl={historyPanelDisclosure.isOpen ? '300px' : 0}
         transition="padding-left 0.3s ease-in-out"
       >
-        <Container 
-          maxW="4xl" 
+        <Container
+          maxW="4xl"
           py={8}
           px={4}
         >
-        <Box position="relative" width="100%" mb={6}>
-          <Flex justify="center" align="center" position="relative">
-            <Heading size="lg" color={headingColor} textAlign="center">
-              Natural Language to SQL Query Generator
-            </Heading>
-            <Box position="absolute" right={0}>
-              <ColorModeToggle />
+          <Box position="relative" width="100%" mb={6}>
+            <Flex justify="center" align="center" position="relative">
+              <Heading size="lg" color={headingColor} textAlign="center">
+                Natural Language to SQL Query Generator
+              </Heading>
+              <Box position="absolute" right={0}>
+                <ColorModeToggle />
+              </Box>
+            </Flex>
+            <Box position="absolute" left={0} top="50%" transform="translateY(-50%)">
+              <IconButton
+                aria-label={historyPanelDisclosure.isOpen ? 'Hide history' : 'Show history'}
+                icon={historyPanelDisclosure.isOpen ? <Icon as={FiChevronLeft} /> : <Icon as={FiClock} />}
+                onClick={() => {
+                  if (historyPanelDisclosure.isOpen) {
+                    historyPanelDisclosure.onClose();
+                  } else {
+                    historyPanelDisclosure.onOpen();
+                  }
+                }}
+                variant="ghost"
+              />
             </Box>
-          </Flex>
-          <Box position="absolute" left={0} top="50%" transform="translateY(-50%)">
-            <IconButton
-              aria-label={historyPanelDisclosure.isOpen ? 'Hide history' : 'Show history'}
-              icon={historyPanelDisclosure.isOpen ? <Icon as={FiChevronLeft} /> : <Icon as={FiClock} />}
-              onClick={() => {
-                if (historyPanelDisclosure.isOpen) {
-                  historyPanelDisclosure.onClose();
-                } else {
-                  historyPanelDisclosure.onOpen();
-                }
-              }}
-              variant="ghost"
+          </Box>
+          <VStack spacing={8} align="stretch">
+            <Box textAlign="center" mb={6}>
+              <Text color={textColor}>
+                Powered by a large language model through Together.ai, this app lets you query the <Link href="https://www.postgresql.org/ftp/projects/pgFoundry/dbsamples/world/world-1.0/" isExternal color="blue.400" fontWeight="bold">World</Link> PostgreSQL database stored in Neon using natural language. Example: "How many cities are there in each country?"
+              </Text>
+            </Box>
+            <ChatInterface
+              onSubmit={handleQuestionSubmit}
+              isLoading={isGenerating}
             />
-          </Box>
-        </Box>
-        <VStack spacing={8} align="stretch">
-          <Box textAlign="center" mb={6}>
-            <Text color={textColor}>
-              Powered by a large language model through Together.ai, this app lets you query the <Link href="https://www.postgresql.org/ftp/projects/pgFoundry/dbsamples/world/world-1.0/" isExternal color="blue.400" fontWeight="bold">World</Link> PostgreSQL database stored in Supabase using natural language. Example: "How many cities are there in each country?"
-            </Text>
-          </Box>
-          <ChatInterface 
-            onSubmit={handleQuestionSubmit} 
-            isLoading={isGenerating} 
-          />
-          
-          <SqlDisplay 
-            sql={sqlQuery} 
-            onExecute={handleExecuteQuery}
-            isExecuting={isExecuting}
-            onSqlUpdate={setSqlQuery}
-          />
-          <ResultsTable 
-            results={results} 
-            isLoading={isExecuting}
-            error={error}
-          />
-          
-          {/* Database Schema Section */}
-          <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden" borderColor={borderColor} boxShadow="md">
-            <Box p={4} bg={useColorModeValue('gray.50', 'gray.800')}>
-              <Flex align="center" mb={3}>
-                <Heading size="sm" color={headingColor}>Database Schema</Heading>
-              </Flex>
-              
-              <Box 
-                bg={useColorModeValue('white', 'gray.800')} 
-                borderRadius="md" 
-                borderWidth="1px"
-                borderColor={borderColor}
-                boxShadow="sm"
-                overflow="hidden"
-              >
-                <SchemaVisualizer schema={schema} />
+
+            <SqlDisplay
+              sql={sqlQuery}
+              onExecute={handleExecuteQuery}
+              isExecuting={isExecuting}
+              onSqlUpdate={setSqlQuery}
+            />
+            <ResultsTable
+              results={results}
+              isLoading={isExecuting}
+              error={error}
+            />
+
+            {/* Database Schema Section */}
+            <Box mt={6} borderWidth="1px" borderRadius="lg" overflow="hidden" borderColor={borderColor} boxShadow="md">
+              <Box p={4} bg={useColorModeValue('gray.50', 'gray.800')}>
+                <Flex align="center" mb={3}>
+                  <Heading size="sm" color={headingColor}>Database Schema</Heading>
+                </Flex>
+
+                <Box
+                  bg={useColorModeValue('white', 'gray.800')}
+                  borderRadius="md"
+                  borderWidth="1px"
+                  borderColor={borderColor}
+                  boxShadow="sm"
+                  overflow="hidden"
+                >
+                  <SchemaVisualizer schema={schema} />
+                </Box>
               </Box>
             </Box>
-          </Box>
-        </VStack>
+          </VStack>
         </Container>
       </Box>
     </Box>
