@@ -243,7 +243,7 @@ export default function Home() {
               <Heading size="lg" color={headingColor} textAlign="center">
                 Natural Language to SQL Query Generator
               </Heading>
-              <Box position="absolute" right={0} display="flex" alignItems="center" gap={2}>
+              <Box position="absolute" right={0} display="flex" alignItems="center" gap={1}>
                 {/* Refresh IconButton (first in order) */}
                 <IconButton
                   aria-label="Refresh"
@@ -251,10 +251,12 @@ export default function Home() {
                   variant="ghost"
                   color="current"
                   fontSize="xl"
-                  mr={1}
+                  mr={0.5}
                   onClick={() => window.location.reload()}
                 />
-                {/* GitHub IconButton (second in order) */}
+                {/* Dark Mode Toggle (second in order) */}
+                <Box mr={0.5}><ColorModeToggle /></Box>
+                {/* GitHub IconButton (third in order) */}
                 <IconButton
                   as={Link}
                   href="https://github.com/fdemirciler/natural_language_to_sql_query_generator"
@@ -264,9 +266,7 @@ export default function Home() {
                   color="current"
                   fontSize="xl"
                   isExternal
-                  mr={1}
                 />
-                <ColorModeToggle />
               </Box>
             </Flex>
             <Box position="absolute" left={0} top="50%" transform="translateY(-50%)">
