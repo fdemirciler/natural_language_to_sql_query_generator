@@ -265,6 +265,9 @@ export default function Home() {
               <Text color={textColor}>
                 Powered by a large language model through Together.ai, this app lets you query the <Link href="https://www.postgresql.org/ftp/projects/pgFoundry/dbsamples/world/world-1.0/" isExternal color="blue.400" fontWeight="bold">World</Link> PostgreSQL database stored in Neon using natural language. Example: "How many cities are there in each country?"
               </Text>
+              <Text color={textColor} mt={2}>
+                GitHub repo: <Link href="https://github.com/fdemirciler/natural_language_to_sql_query_generator" isExternal color="blue.400" fontWeight="bold">https://github.com/fdemirciler/natural_language_to_sql_query_generator</Link>
+              </Text>
             </Box>
             <ChatInterface
               onSubmit={handleQuestionSubmit}
