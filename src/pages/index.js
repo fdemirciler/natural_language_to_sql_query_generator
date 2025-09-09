@@ -243,28 +243,35 @@ export default function Home() {
               <Heading size="lg" color={headingColor} textAlign="center">
                 Natural Language to SQL Query Generator
               </Heading>
-              <Box position="absolute" right={0} display="flex" alignItems="center" gap={1}>
+              <Box position="absolute" right={0} display="flex" alignItems="center" gap="2px">
                 {/* Refresh IconButton (first in order) */}
                 <IconButton
                   aria-label="Refresh"
-                  icon={<Icon as={FiRefreshCw} />}
+                  icon={<Icon as={FiRefreshCw} boxSize={5} />}
                   variant="ghost"
                   color="current"
-                  fontSize="xl"
-                  mr={0.5}
+                  fontSize="lg"
+                  minW="32px"
+                  h="32px"
+                  p="0"
                   onClick={() => window.location.reload()}
                 />
                 {/* Dark Mode Toggle (second in order) */}
-                <Box mr={0.5}><ColorModeToggle /></Box>
+                <Box p="0" m="0">
+                  <ColorModeToggle />
+                </Box>
                 {/* GitHub IconButton (third in order) */}
                 <IconButton
                   as={Link}
                   href="https://github.com/fdemirciler/natural_language_to_sql_query_generator"
                   aria-label="GitHub Repository"
-                  icon={<Icon as={FaGithub} />}
+                  icon={<Icon as={FaGithub} boxSize={5} />}
                   variant="ghost"
                   color="current"
-                  fontSize="xl"
+                  fontSize="lg"
+                  minW="32px"
+                  h="32px"
+                  p="0"
                   isExternal
                 />
               </Box>
