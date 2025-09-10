@@ -41,17 +41,21 @@ const CustomMoonIcon = (props) => (
 );
 
 // Inline ColorModeToggle component
-const ColorModeToggle = () => {
+const ColorModeToggle = ({ size = "md" }) => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const iconSize = size === "sm" ? "1rem" : "1.25rem";
   return (
     <IconButton
       aria-label={colorMode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-      icon={colorMode === 'light' ? <CustomMoonIcon width="1.25rem" height="1.25rem" /> : <SunIcon />}
+      icon={colorMode === 'light' ? <CustomMoonIcon width={iconSize} height={iconSize} /> : <SunIcon boxSize={size === "sm" ? 4 : 5} />}
       onClick={toggleColorMode}
       variant="ghost"
       color="current"
-      fontSize="xl"
+      fontSize={size}
       ml={2}
+      minW={size === "sm" ? "28px" : "32px"}
+      h={size === "sm" ? "28px" : "32px"}
+      p="0"
     />
   );
 };
@@ -247,30 +251,30 @@ export default function Home() {
                 {/* Refresh IconButton (first in order) */}
                 <IconButton
                   aria-label="Refresh"
-                  icon={<Icon as={FiRefreshCw} boxSize={5} />}
+                  icon={<Icon as={FiRefreshCw} boxSize={4} />}
                   variant="ghost"
                   color="current"
-                  fontSize="lg"
-                  minW="32px"
-                  h="32px"
+                  fontSize="md"
+                  minW="28px"
+                  h="28px"
                   p="0"
                   onClick={() => window.location.reload()}
                 />
                 {/* Dark Mode Toggle (second in order) */}
                 <Box p="0" m="0">
-                  <ColorModeToggle />
+                  <ColorModeToggle size="sm" />
                 </Box>
                 {/* GitHub IconButton (third in order) */}
                 <IconButton
                   as={Link}
                   href="https://github.com/fdemirciler/natural_language_to_sql_query_generator"
                   aria-label="GitHub Repository"
-                  icon={<Icon as={FaGithub} boxSize={5} />}
+                  icon={<Icon as={FaGithub} boxSize={4} />}
                   variant="ghost"
                   color="current"
-                  fontSize="lg"
-                  minW="32px"
-                  h="32px"
+                  fontSize="md"
+                  minW="28px"
+                  h="28px"
                   p="0"
                   isExternal
                 />
