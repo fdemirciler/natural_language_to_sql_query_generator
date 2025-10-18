@@ -1,0 +1,108 @@
+{
+  "project_id": "zusxmtczffvuxmuorwzz",
+  "database_name": "world_cities",
+  "tables": [
+    {
+      "name": "city",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "name",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "countrycode",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        },
+        {
+          "name": "population",
+          "data_type": "integer",
+          "format": "int4",
+          "is_nullable": false
+        }
+      ]
+    },
+    {
+      "name": "country",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "countrycode",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        },
+        {
+          "name": "country",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "capital",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": true
+        },
+        {
+          "name": "area_in_sqkm",
+          "data_type": "real",
+          "format": "float4",
+          "is_nullable": false
+        },
+        {
+          "name": "population",
+          "data_type": "integer",
+          "format": "int4",
+          "is_nullable": false
+        },
+        {
+          "name": "continent",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "currencycode",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": true
+        },
+        {
+          "name": "currencyname",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": true
+        }
+      ]
+    },
+    {
+      "name": "countrylanguage",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "countrycode",
+          "data_type": "character",
+          "format": "bpchar",
+          "is_nullable": false
+        },
+        {
+          "name": "language",
+          "data_type": "text",
+          "format": "text",
+          "is_nullable": false
+        },
+        {
+          "name": "isofficial",
+          "data_type": "boolean",
+          "format": "bool",
+          "is_nullable": false
+        }
+      ]
+    }
+  ]
+}

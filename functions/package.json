@@ -1,0 +1,16 @@
+{
+  "name": "nl2sql-query-functions",
+  "version": "1.0.0",
+  "description": "Firebase Functions for Natural Language to SQL Query Generator",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "firebase-functions": "^5.1.1",
+    "firebase-admin": "^12.0.0",
+    "@google-cloud/secret-manager": "^5.6.0",
+    "pg": "^8.11.0",
+    "node-fetch": "^2.7.0"
+  }
+}
