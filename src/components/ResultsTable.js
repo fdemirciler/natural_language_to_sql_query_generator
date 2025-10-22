@@ -20,8 +20,7 @@ import {
   Text,
   useColorModeValue,
   Tooltip,
-  HStack,
-  Badge
+  HStack
 } from '@chakra-ui/react';
 import { DownloadIcon, CopyIcon, ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
@@ -42,24 +41,55 @@ const ResultsTable = ({ results, isLoading, error }) => {
   const headerBg = useColorModeValue('gray.50', 'gray.700');
   const tableTextColor = useColorModeValue('gray.900', 'gray.100');
 
+  const getComparableNumber = (value) => {
+    if (value === null || value === undefined) {
+      return null;
+    }
+    if (typeof value === 'number') {
+      return value;
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed.length === 0) {
+        return null;
+      }
+      const numeric = Number(trimmed);
+      if (!Number.isNaN(numeric)) {
+        return numeric;
+      }
+    }
+    return null;
+  };
+
+  const sanitizedResults = React.useMemo(() => {
+    if (!Array.isArray(results)) {
+      return [];
+    }
+    return results;
+  }, [results]);
+
   // Sorting logic
   const sortedResults = React.useMemo(() => {
-    if (!results || !Array.isArray(results) || !sortConfig.key) return results;
-    const sorted = [...results].sort((a, b) => {
+    if (!sortConfig.key) return sanitizedResults;
+    const sorted = [...sanitizedResults].sort((a, b) => {
       const aVal = a[sortConfig.key];
       const bVal = b[sortConfig.key];
       if (aVal === bVal) return 0;
       if (aVal === null || aVal === undefined) return 1;
       if (bVal === null || bVal === undefined) return -1;
-      if (typeof aVal === 'number' && typeof bVal === 'number') {
-        return sortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+
+      const aNumber = getComparableNumber(aVal);
+      const bNumber = getComparableNumber(bVal);
+      if (aNumber !== null && bNumber !== null) {
+        return sortConfig.direction === 'asc' ? aNumber - bNumber : bNumber - aNumber;
       }
+
       return sortConfig.direction === 'asc'
         ? aVal.toString().localeCompare(bVal.toString())
         : bVal.toString().localeCompare(aVal.toString());
     });
     return sorted;
-  }, [results, sortConfig]);
+  }, [sanitizedResults, sortConfig]);
 
   const handleSort = (col) => {
     setSortConfig((prev) => {
@@ -69,6 +99,16 @@ const ResultsTable = ({ results, isLoading, error }) => {
       return { key: col, direction: 'asc' };
     });
   };
+
+  React.useEffect(() => {
+    if (sortConfig.key !== null) {
+      setPage(0);
+    }
+  }, [sortConfig.key, sortConfig.direction]);
+
+  React.useEffect(() => {
+    setPage(0);
+  }, [sanitizedResults]);
 
 
   if (isLoading) {
@@ -90,63 +130,75 @@ const ResultsTable = ({ results, isLoading, error }) => {
   }
 
   // Prepare empty state display
-  const isEmpty = results === null || results === undefined || (Array.isArray(results) && results.length === 0);
+  const isEmpty = sanitizedResults.length === 0;
 
   // Extract column headers from the first result or use empty array if no results
-  const columns = !isEmpty ? Object.keys(results[0]) : [];
+  const columns = !isEmpty ? Object.keys(sanitizedResults[0]) : [];
 
   // Utility function to convert results to CSV
-const downloadCSV = () => {
-  if (!results || results.length === 0) return;
-  const csvRows = [];
-  csvRows.push(columns.join(","));
-  results.forEach(row => {
-    const values = columns.map(col => {
-      let val = row[col];
-      if (val === null || val === undefined) return '';
-      // Escape quotes and commas
-      val = val.toString().replace(/"/g, '""');
-      if (val.includes(',') || val.includes('"') || val.includes('\n')) {
-        val = `"${val}"`;
-      }
-      return val;
+  const downloadCSV = () => {
+    if (isEmpty) return;
+    const csvRows = [];
+    csvRows.push(columns.join(","));
+    sanitizedResults.forEach(row => {
+      const values = columns.map(col => {
+        let val = row[col];
+        if (val === null || val === undefined) return '';
+        // Escape quotes and commas
+        val = val.toString().replace(/"/g, '""');
+        if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+          val = `"${val}"`;
+        }
+        return val;
+      });
+      csvRows.push(values.join(","));
     });
-    csvRows.push(values.join(","));
-  });
-  const csvContent = csvRows.join("\n");
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'query_results.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-};
+    const csvContent = csvRows.join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'query_results.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   // Pagination logic
-const rowsPerPage = 10;
-const pageCount = results && results.length ? Math.ceil(results.length / rowsPerPage) : 1;
-const paginatedResults = !isEmpty ? (sortedResults || []).slice(page * rowsPerPage, (page + 1) * rowsPerPage) : [];
+  const rowsPerPage = 10;
+  const pageCount = sanitizedResults.length ? Math.ceil(sanitizedResults.length / rowsPerPage) : 1;
 
-// Copy to clipboard as CSV
-const copyTable = () => {
-  if (!results || results.length === 0) return;
-  const csvRows = [];
-  csvRows.push(columns.join(","));
-  results.forEach(row => {
-    const values = columns.map(col => {
-      let val = row[col];
-      if (val === null || val === undefined) return '';
-      val = val.toString().replace(/"/g, '""');
-      if (val.includes(',') || val.includes('"') || val.includes('\n')) {
-        val = `"${val}"`;
-      }
-      return val;
+  React.useEffect(() => {
+    if (page > pageCount - 1) {
+      setPage(pageCount - 1);
+    }
+  }, [page, pageCount]);
+
+  const paginatedResults = React.useMemo(() => {
+    if (isEmpty) {
+      return [];
+    }
+    return sortedResults.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  }, [sortedResults, page, rowsPerPage, isEmpty]);
+
+  // Copy to clipboard as CSV
+  const copyTable = () => {
+    if (isEmpty) return;
+    const csvRows = [];
+    csvRows.push(columns.join(","));
+    sanitizedResults.forEach(row => {
+      const values = columns.map(col => {
+        let val = row[col];
+        if (val === null || val === undefined) return '';
+        val = val.toString().replace(/"/g, '""');
+        if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+          val = `"${val}"`;
+        }
+        return val;
+      });
+      csvRows.push(values.join(","));
     });
-    csvRows.push(values.join(","));
-  });
-  navigator.clipboard.writeText(csvRows.join("\n"));
-};
+    navigator.clipboard.writeText(csvRows.join("\n"));
+  };
 
 
   
@@ -157,7 +209,7 @@ const copyTable = () => {
           <Flex align="center">
             <Heading size="sm" color={headerColor}>Query Results</Heading>
             {!isEmpty && (
-              <Text ml={2} fontSize="xs" color={rowCountColor}>{results.length} rows</Text>
+              <Text ml={2} fontSize="xs" color={rowCountColor}>{sanitizedResults.length} rows</Text>
             )}
           </Flex>
           <HStack spacing={2}>
@@ -177,7 +229,7 @@ const copyTable = () => {
         {isEmpty ? (
           <Box p={6} bg={tableBg} textAlign="center" borderWidth="1px" borderRadius="md" borderColor={borderColor}>
             <Text color={emptyTextColor}>
-              {results && Array.isArray(results) ? 'No rows returned for this query.' : 'No results yet. Run a query to see data here.'}
+              {Array.isArray(results) ? 'No rows returned for this query.' : 'No results yet. Run a query to see data here.'}
             </Text>
           </Box>
         ) : (
@@ -230,7 +282,7 @@ const copyTable = () => {
         {/* Pagination Controls */}
         {!isEmpty && (
           <Flex justify="space-between" align="center" mt={4}>
-            <Text fontSize="sm" color={textColor}>Showing {page * rowsPerPage + 1} to {Math.min((page + 1) * rowsPerPage, results.length)} of {results.length} results</Text>
+            <Text fontSize="sm" color={textColor}>Showing {page * rowsPerPage + 1} to {Math.min((page + 1) * rowsPerPage, sanitizedResults.length)} of {sanitizedResults.length} results</Text>
             
             <HStack spacing={1}>
               <Button 
