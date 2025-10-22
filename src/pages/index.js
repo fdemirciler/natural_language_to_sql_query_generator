@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Head from 'next/head';
 import {
   Container,
   Box,
@@ -199,6 +200,9 @@ export default function Home() {
 
   return (
     <Box minH="100vh" bg={bg}>
+      <Head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+      </Head>
       {/* History Panel */}
       <HistoryPanel
         ref={historyPanelRef}
@@ -280,7 +284,7 @@ export default function Home() {
           <VStack spacing={8} align="stretch">
             <Box textAlign="left" mb={6}>
               <Text color={textColor}>
-                Ask questions about your data in plain English. AI understands your intent, writes the SQL query, and the app runs the query securely on the database. The model only sees your schema, never your data.              </Text>
+                Ask questions about your data in plain English. AI understands your intent, writes the SQL query, and the app runs the query securely on the database. The model only sees your schema, never your data. </Text>
               <Text color={textColor} mt={4}>
                 Fully secure, authenticated, and ready for any connected database. Explore it on the sample <Link href="https://www.postgresql.org/ftp/projects/pgFoundry/dbsamples/world/world-1.0/" isExternal color="blue.400" fontWeight="bold">World cities</Link> PostgreSQL database.
               </Text>
