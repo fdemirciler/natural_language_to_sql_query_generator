@@ -31,7 +31,7 @@ exports.generateSql = onRequest(
         return res.status(400).json({ error: 'Question is required' });
       }
 
-      const apiKey = await accessSecret('TOGETHER_API_KEY');
+      const apiKey = await accessSecret('OPENROUTER_API_KEY');
 
       const systemPrompt = `You are an expert SQL query generator and database assistant for PostgreSQL databases.
     
@@ -68,14 +68,24 @@ ORDER BY c.population DESC
 LIMIT 10
 `;
 
-      const response = await fetch('https://api.together.xyz/v1/chat/completions', {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      };
+
+      if (process.env.OPENROUTER_HTTP_REFERER) {
+        headers['HTTP-Referer'] = process.env.OPENROUTER_HTTP_REFERER;
+      }
+
+      if (process.env.OPENROUTER_X_TITLE) {
+        headers['X-Title'] = process.env.OPENROUTER_X_TITLE;
+      }
+
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
+        headers,
         body: JSON.stringify({
-          model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+          model: "meta-llama/llama-3.3-70b-instruct:free",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: question }
@@ -87,7 +97,7 @@ LIMIT 10
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Together API error:', errorText);
+        console.error('OpenRouter API error:', errorText);
         throw new Error(`LLM API failed with status ${response.status}`);
       }
 

@@ -61,7 +61,7 @@ graph LR
     FH --> ES[⚡ Cloud Function<br/>executeSql]
     GS --> SM[🔐 Secret Manager]
     ES --> SM
-    GS --> AI[🤖 Together.ai<br/>LLM API]
+    GS --> AI[🤖 OpenRouter<br/>LLM API]
     ES --> DB[🗄️ Neon PostgreSQL<br/>World Database]
     
     style User fill:#E8F5E9
@@ -90,7 +90,7 @@ graph LR
 - Firebase Hosting (Static files)
 - Google Cloud Secret Manager (API keys)
 - Neon PostgreSQL (Database)
-- Together.ai (LLM API)
+- OpenRouter (LLM API)
 
 **Server Region:** Europe
 
@@ -105,14 +105,14 @@ sequenceDiagram
     participant User
     participant Frontend
     participant generateSql
-    participant Together.ai
+    participant OpenRouter
     participant executeSql
     participant Neon DB
     
     User->>Frontend: Types question
     Frontend->>generateSql: Send question + schema
-    generateSql->>Together.ai: Request SQL generation
-    Together.ai-->>generateSql: Return SQL query
+    generateSql->>OpenRouter: Request SQL generation
+    OpenRouter-->>generateSql: Return SQL query
     generateSql-->>Frontend: Display SQL
     User->>Frontend: Click "Execute"
     Frontend->>executeSql: Send SQL query
@@ -152,7 +152,7 @@ Want to run this on your machine? Here's how:
 - Node.js 20 or higher
 - Firebase CLI: `npm install -g firebase-tools`
 - API keys:
-  - [Together.ai](https://www.together.ai/) account (for LLM)
+  - [OpenRouter](https://openrouter.ai/) account (for LLM)
   - [Neon](https://neon.tech/) PostgreSQL database
 
 ### Setup
@@ -171,8 +171,11 @@ cp .env.example .env.local
 cp functions/.env.example functions/.env.local
 
 # Edit .env.local files with your actual API keys:
-# - TOGETHER_API_KEY=your_together_ai_key
+# - OPENROUTER_API_KEY=your_openrouter_api_key
 # - NEON_DATABASE_URL=your_neon_connection_string
+# Optional headers for OpenRouter ranking (if you have a site/app):
+# - OPENROUTER_HTTP_REFERER=https://your-site-url
+# - OPENROUTER_X_TITLE=Your App Name
 
 # Run the development server
 npm run dev
@@ -221,7 +224,7 @@ This app is deployed on Firebase and runs entirely on **free tier** services:
 - **Firebase Cloud Functions** - Backend API endpoints
 - **Google Cloud Secret Manager** - API key storage
 - **Neon PostgreSQL** - Database (free tier)
-- **Together.ai** - LLM API (free tier)
+- **OpenRouter** - LLM API (free tier)
 
 **Total monthly cost: $0** 💰
 
