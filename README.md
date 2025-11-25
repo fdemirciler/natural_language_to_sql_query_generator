@@ -1,4 +1,4 @@
-# 🔮 Natural Language to SQL Query Generator
+# Natural Language to SQL Query Generator
 
 > Ask questions in plain English, get SQL queries instantly!
 
