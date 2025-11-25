@@ -8,6 +8,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/schema",
+        "function": "schema"
+      },
+      {
         "source": "/api/generate-sql",
         "function": "generateSql"
       },

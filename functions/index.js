@@ -2,6 +2,8 @@ const { onRequest } = require('firebase-functions/v2/https');
 const fetch = require('node-fetch');
 const { Client } = require('pg');
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+const fs = require('fs');
+const path = require('path');
 
 const secretManager = new SecretManagerServiceClient();
 const projectId = process.env.GCLOUD_PROJECT;
@@ -11,6 +13,30 @@ async function accessSecret(secretId) {
   const [version] = await secretManager.accessSecretVersion({ name });
   return version.payload.data.toString('utf8');
 }
+
+exports.schema = onRequest(
+  {
+    region: 'europe-west4',
+    cors: true,
+    invoker: 'public'
+  },
+  async (req, res) => {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    try {
+      // Read schema from the public folder relative to the functions directory
+      const schemaPath = path.join(__dirname, '..', 'public', 'world_cities_schema.json');
+      const schemaData = fs.readFileSync(schemaPath, 'utf-8');
+      const schema = JSON.parse(schemaData);
+
+      return res.status(200).json(schema.tables || []);
+    } catch (error) {
+      console.error('Error in schema API route:', error);
+      return res.status(500).json({ error: error.message || 'Failed to load schema' });
+    }
+  });
 
 exports.generateSql = onRequest(
   { 
