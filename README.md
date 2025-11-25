@@ -77,9 +77,12 @@ graph LR
 
 **Frontend:**
 - Next.js 14 (Static Export)
-- Chakra UI (Component Library)
 - React 18
-- Syntax Highlighter
+- TypeScript
+- Tailwind CSS (Styling)
+- React Syntax Highlighter (SQL highlighting)
+- SQL Formatter
+- Lucide React (Icons)
 
 **Backend:**
 - Firebase Cloud Functions (Gen 2)
@@ -193,24 +196,38 @@ nl2sql_query_generator/
 │   ├── index.js           # generateSql & executeSql functions
 │   └── package.json       # Backend dependencies
 ├── src/
-│   ├── components/        # React UI components
-│   │   ├── ChatInterface.js
-│   │   ├── ResultsTable.js
-│   │   ├── SqlDisplay.js
-│   │   ├── SchemaVisualizer.js
-│   │   ├── HistoryPanel.js
-│   │   └── HistoryItem.js
+│   ├── components/        # React UI components (TypeScript)
+│   │   ├── ChatInterface.tsx
+│   │   ├── EmptyState.tsx
+│   │   ├── HistoryItem.tsx
+│   │   ├── ResultsView.tsx
+│   │   ├── SchemaSidebar.tsx
+│   │   ├── SchemaVisualizer.tsx
+│   │   └── SqlEditor.tsx
+│   ├── constants/
+│   │   └── index.ts       # Application constants
 │   ├── pages/
-│   │   ├── _app.js        # Next.js app wrapper
-│   │   └── index.js       # Main page
-│   ├── utils/
-│   │   └── schema.js      # Schema utilities
-│   └── theme.js           # Chakra UI theme
+│   │   ├── _app.tsx       # Next.js app wrapper
+│   │   ├── _document.tsx  # Next.js document wrapper
+│   │   ├── index.tsx      # Main page
+│   │   └── api/
+│   │       ├── generate-sql.ts  # SQL generation API route
+│   │       └── execute-sql.ts   # SQL execution API route
+│   ├── types/
+│   │   └── index.ts       # TypeScript type definitions
+│   └── utils/
+│       ├── schema.js      # Schema loading utilities
+│       └── hooks.ts       # React custom hooks
+├── styles/
+│   └── globals.css        # Global styles with Tailwind CSS
 ├── public/
 │   └── world_cities_schema.json  # Database schema
 ├── firebase.json          # Firebase configuration
 ├── .firebaserc            # Firebase project settings
 ├── next.config.js         # Next.js configuration
+├── tsconfig.json          # TypeScript configuration
+├── tailwind.config.js     # Tailwind CSS configuration
+├── postcss.config.js      # PostCSS configuration
 └── package.json           # Frontend dependencies
 ```
 
